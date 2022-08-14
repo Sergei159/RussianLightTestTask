@@ -45,7 +45,7 @@ public class SignUpController {
             }
             person.setPassword(encoder.encode(person.getPassword()));
             Role role;
-            if (person.getRole().getId() == 2) {
+            if ("ADMIN".equalsIgnoreCase(person.getRole().getName())) {
                 role = roleService.findByName("ADMIN").orElse(new Role());
             } else {
                 role = roleService.findByName("USER").orElse(new Role());

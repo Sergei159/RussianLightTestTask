@@ -11,24 +11,9 @@ import javax.sql.DataSource;
 @SpringBootApplication
 public class RussianLightApplication {
 
-
-	@Bean
-	public BCryptPasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-
-	@Bean
-	public SpringLiquibase liquibase(DataSource ds) {
-		SpringLiquibase liquibase = new SpringLiquibase();
-		liquibase.setChangeLog("classpath:liquibase-changeLog.xml");
-		liquibase.setDataSource(ds);
-		return liquibase;
-	}
-
 	public static void main(String[] args) {
 		SpringApplication.run(RussianLightApplication.class, args);
-		System.out.println("Click to view documentation: http://localhost:9092/swagger-ui/");
-		System.out.println("login: http://localhost:9092/login");
+		System.out.println("Click to view documentation: http://localhost:8080/swagger-ui/");
 	}
 
 }

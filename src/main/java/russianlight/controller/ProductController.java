@@ -70,23 +70,6 @@ public class ProductController {
         return productService.findByPriceRange(from, to);
     }
 
-//    @PostMapping("/")
-//    @Validated(Operation.OnCreate.class)
-//    public ResponseEntity save(@Valid @RequestBody Product product,
-//                               @RequestParam("file") MultipartFile file) throws IOException {
-//        Optional<Product> result = Optional.ofNullable(product);
-//        if (result.isPresent()) {
-//            if (result.get().getCategory() == null) {
-//                throw new NullPointerException("Category must not be null!");
-//            }
-//            result.get().setPhoto(file.getBytes());
-//            productService.saveProduct(product);
-//        }
-//        return new ResponseEntity<>(
-//                result.orElse(new Product()),
-//                result.isPresent() ? HttpStatus.CREATED : HttpStatus.NOT_FOUND
-//        );
-//    }
     @PostMapping("/")
     @ApiOperation("create a new product")
     @Validated(Operation.OnCreate.class)
