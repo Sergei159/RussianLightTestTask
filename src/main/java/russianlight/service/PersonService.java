@@ -40,9 +40,11 @@ public class PersonService implements IService {
         return repository.findByName(name);
     }
 
-    public void update(Person person) {
-        Optional<Person> optPerson = repository.findById(person.getId());
+    public boolean update(Person person, int id) {
+        boolean result = false;
+        Optional<Person> optPerson = repository.findById(id);
         if (optPerson.isPresent()) {
+            person.setId(id);
             if (person.getRole() != null) {
                 Optional<Role> optRole = roleRepository.findById(optPerson.get().getRole().getId());
                 optRole.ifPresent(person::setRole);
@@ -50,7 +52,9 @@ public class PersonService implements IService {
                 throw new NullPointerException("role must not be null!");
             }
             repository.save(person);
+            result = true;
         }
+        return result;
     }
 
     public void save(Person person) {

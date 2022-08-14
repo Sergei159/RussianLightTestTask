@@ -27,7 +27,8 @@ public class RussianLightApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(RussianLightApplication.class, args);
-		System.out.println("Click to view documentation: http://localhost:8080/swagger-ui/");
+		System.out.println("Click to view documentation: http://localhost:9092/swagger-ui/");
+		System.out.println("login: http://localhost:9092/login");
 	}
 
 }

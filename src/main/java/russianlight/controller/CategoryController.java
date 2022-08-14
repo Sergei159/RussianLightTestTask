@@ -1,7 +1,6 @@
 package russianlight.controller;
 
 
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -72,7 +71,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation("delete category")
+    @ApiOperation("delete category. Product status with deleted category(category == null) must be false;")
     @Validated(Operation.OnDelete.class)
     public ResponseEntity<Void> delete(@PathVariable int id) {
         this.categoryService.deleteCategory(id);

@@ -32,6 +32,9 @@ public class CategoryService implements IService {
         return categoryRepository.save(category);
     }
 
+    /**
+     *  Product status with deleted category(category == null) must be false;
+     */
     @Transactional
     public void deleteCategory(int id) {
         categoryRepository.updateStatusToFalse(id);

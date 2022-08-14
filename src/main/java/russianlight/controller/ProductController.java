@@ -109,15 +109,11 @@ public class ProductController {
     @ApiOperation("completely update product")
     @Validated(Operation.OnUpdate.class)
     public ResponseEntity<Void> update(@PathVariable int id, @Valid @RequestBody Product product) {
-        Optional<Product> result = Optional.ofNullable(product);
-        if (result.isPresent()) {
-            product.setId(id);
-            productService.updateProduct(product);
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
+            return productService.updateProduct(product, id)
+                    ? ResponseEntity.ok().build()
+                    : ResponseEntity.notFound().build();
         }
-    }
+
 
     @DeleteMapping("/{id}")
     @ApiOperation("delete product")

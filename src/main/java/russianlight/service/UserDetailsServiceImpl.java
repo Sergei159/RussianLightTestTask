@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * service for sign-up users with Spring Security
+ */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final PersonRepository repository;

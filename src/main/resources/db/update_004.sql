@@ -39,6 +39,7 @@ INSERT INTO categories(name, description) VALUES
 INSERT INTO categories(name, description) VALUES
 ('кабеленесущие системы', 'оборудование для прокладки кабеля' );
 
+
 INSERT INTO persons (name, email, password, role_id) VALUES ('Sergei', 'Serega@com', '$2a$12$0JOV0/MTQuYW7JhIPXy3tua73YoUa4.VDQEPDjM9lpwfWqAue7Yli', 1);
 INSERT INTO persons (name, email, password, role_id) VALUES ('SergeiAdmin', 'Admin@com', '$2a$12$15bw0zNjbw3yU3dXPKwpR.yXBPPsCX/1pdU3mcaVj.SMD0i00XJOy', 2);
 

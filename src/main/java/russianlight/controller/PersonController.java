@@ -47,15 +47,11 @@ public class PersonController {
     @ApiOperation("update user data")
     @Validated(Operation.OnUpdate.class)
     public ResponseEntity<Void> update(@PathVariable int id, @Valid @RequestBody Person person) {
-        Optional<Person> result = Optional.ofNullable(person);
-        if (result.isPresent()) {
-            person.setId(id);
-            personService.update(person);
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
+            return personService.update(person, id)
+                    ? ResponseEntity.ok().build()
+                    : ResponseEntity.notFound().build();
         }
-    }
+
 
     @DeleteMapping("/{id}")
     @ApiOperation("delete user")

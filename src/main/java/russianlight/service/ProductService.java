@@ -1,6 +1,8 @@
 package russianlight.service;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import russianlight.model.Category;
 import russianlight.model.Product;
 import russianlight.repository.CategoryRepository;
@@ -37,32 +39,51 @@ public class ProductService implements IService {
         productRepository.deleteById(id);
     }
 
+    /**
+     * partially change the product.
+     * product status with  category must be true;
+     */
     public Product patch(int id, Product product) throws InvocationTargetException, IllegalAccessException {
+        Optional<Product> optProduct = productRepository.findById(id);
+        if (!optProduct.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        Optional<Category> optCategory = categoryRepository.findById(product.getCategory().getId());
+        if (!optCategory.isPresent()) {
+            throw new IllegalArgumentException("category with this ID is not present");
+        }
+        product.setCategory(optCategory.get());
+        product.setStatus(true);
         return (Product) patch(productRepository, id, product);
     }
 
 
-    //TODO
-    //нужен ли NPE
-
     /**
      * check the product and save changes
+     * product status with  category must be true;
      * @param product to be checked
      */
-    public void updateProduct(Product product) {
-        Optional<Product> optProduct = productRepository.findById(product.getId());
+    public boolean updateProduct(Product product, int id) {
+        boolean result = false;
+        Optional<Product> optProduct = productRepository.findById(id);
         if (optProduct.isPresent()) {
-            if (product.getCategory() != null) {
-                Optional<Category> optCategory = categoryRepository.findById(optProduct.get().getCategory().getId());
-                optCategory.ifPresent(product::setCategory);
-            } else {
-                throw new NullPointerException("category must not be null!");
-            }
+            product.setId(id);
             if (product.getCreated() == null) {
                 product.setCreated(optProduct.get().getCreated());
             }
+            if (product.getCategory() != null) {
+                Optional<Category> optCategory = categoryRepository.findById(product.getCategory().getId());
+                if (optCategory.isPresent()) {
+                    product.setCategory(optCategory.get());
+                    product.setStatus(true);
+                }
+            } else {
+                throw new NullPointerException("category must not be null!");
+            }
             saveProduct(product);
+            result = true;
         }
+        return result;
     }
 
     public List<Product> findByCategoryId(int id) {
