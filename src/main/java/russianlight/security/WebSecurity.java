@@ -21,6 +21,18 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     private UserDetailsServiceImpl userDetailsService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    private static final String[] AUTH_WHITELIST = {
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            "/v3/api-docs/**",
+            "/swagger-ui/**"
+    };
+
     public WebSecurity(UserDetailsServiceImpl userDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userDetailsService = userDetailsService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
@@ -30,15 +42,17 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
-                .antMatchers(HttpMethod.GET, "/users/*").hasRole("ADMIN")
-                .antMatchers(HttpMethod.POST, "/users/*").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PUT, "/users/*").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PATCH, "/users/*").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/users/*").hasRole("ADMIN")
-                .antMatchers(HttpMethod.POST, "/products/*").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PUT, "/products/*").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PATCH, "/products/*").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/products/*").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/users").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/users").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PATCH, "/users").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/users").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/products").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/products").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PATCH, "/products").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/products").hasRole("ADMIN")
+                .antMatchers(AUTH_WHITELIST).permitAll()
+//                .and().authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager(), userDetailsService))
@@ -51,6 +65,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
     }
+
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {

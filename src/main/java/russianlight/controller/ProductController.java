@@ -1,6 +1,7 @@
 package russianlight.controller;
 
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -30,19 +31,15 @@ public class ProductController {
         this.productService = productService;
     }
 
-    /**
-     * show all products
-     */
     @GetMapping("/")
+    @ApiOperation("show all products")
     public List<Product> findAllProducts() {
         return productService.findAll();
     }
 
-    /**
-     * show product by id
-     */
 
     @GetMapping("/{id}")
+    @ApiOperation("show product by id")
     public ResponseEntity<Product> findProductById(@PathVariable int id) {
         Optional<Product> message = productService.findById(id);
         return new ResponseEntity<>(
@@ -51,33 +48,28 @@ public class ProductController {
         );
     }
 
-    /**
-     * find product by category
-     */
     @GetMapping("/filter/category/{id}")
+    @ApiOperation("find product by category")
     public List<Product> findProductByCategoryId(@PathVariable int id) {
         return productService.findByCategoryId(id);
     }
 
-    /**
-     * find product by name
-     */
+
     @GetMapping("/filter/name/{name}")
+    @ApiOperation("find product by name")
     public List<Product> findProductByName(@PathVariable String name) {
         return productService.findByName(name);
     }
 
-    /**
-     * find product by price range
-     */
+
     @GetMapping("/filter/price/{from}-{to}")
-    public List<Product> findProductByPriceRange(@Valid @PathVariable @Min(1) int from, @Valid @PathVariable @Min(1) int to) {
+    @ApiOperation("find product by price range")
+    public List<Product> findProductByPriceRange(
+            @Valid @PathVariable @Min(value = 1, message = "price must be greater than 0") int from,
+            @Valid @PathVariable @Min(value = 1, message = "price must be greater than 0") int to) {
         return productService.findByPriceRange(from, to);
     }
 
-    /**
-     * create a new product
-     */
 //    @PostMapping("/")
 //    @Validated(Operation.OnCreate.class)
 //    public ResponseEntity save(@Valid @RequestBody Product product,
@@ -96,6 +88,7 @@ public class ProductController {
 //        );
 //    }
     @PostMapping("/")
+    @ApiOperation("create a new product")
     @Validated(Operation.OnCreate.class)
     public ResponseEntity save(@Valid @RequestBody Product product) {
         Optional<Product> result = Optional.ofNullable(product);
@@ -112,10 +105,8 @@ public class ProductController {
         );
     }
 
-    /**
-     * completely update product
-     */
     @PutMapping("/{id}")
+    @ApiOperation("completely update product")
     @Validated(Operation.OnUpdate.class)
     public ResponseEntity<Void> update(@PathVariable int id, @Valid @RequestBody Product product) {
         Optional<Product> result = Optional.ofNullable(product);
@@ -128,10 +119,8 @@ public class ProductController {
         }
     }
 
-    /**
-     * delete product
-     */
     @DeleteMapping("/{id}")
+    @ApiOperation("delete product")
     @Validated(Operation.OnDelete.class)
     public ResponseEntity<Void> delete(@PathVariable int id) {
         this.productService.deleteProduct(id);
@@ -139,10 +128,8 @@ public class ProductController {
     }
 
 
-    /**
-     * partially update product
-     */
     @PatchMapping("/patch/{id}")
+    @ApiOperation("partially update product")
     public Product patch(@PathVariable int id,@RequestBody Product product) throws InvocationTargetException, IllegalAccessException {
         return productService.patch(id, product);
     }

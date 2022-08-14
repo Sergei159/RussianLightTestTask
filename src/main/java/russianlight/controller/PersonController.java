@@ -1,86 +1,39 @@
 package russianlight.controller;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import russianlight.handlers.Operation;
 import russianlight.model.Person;
-import russianlight.model.Role;
 import russianlight.service.PersonService;
-import russianlight.service.RoleService;
 
 import javax.validation.Valid;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
 
-import static russianlight.security.JWTAuthenticationFilter.SIGN_UP_URL;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/users")
 @Validated
 public class PersonController {
     private final PersonService personService;
-    private final BCryptPasswordEncoder encoder;
-    private final RoleService roleService;
 
-    public PersonController(PersonService personService, BCryptPasswordEncoder encoder, RoleService roleService) {
+    public PersonController(PersonService personService) {
         this.personService = personService;
-        this.encoder = encoder;
-        this.roleService = roleService;
     }
 
-    /**
-     * role_id == 1 is USER
-     * role_id == 2 is ADMIN
-     * @param person
-     */
-    @PostMapping(SIGN_UP_URL)
-    @Validated(Operation.OnCreate.class)
-    public ResponseEntity<Person> signUp(@Valid @RequestBody Person person) {
-        Optional<Person> result = Optional.ofNullable(person);
-        if (result.isPresent()) {
-            String email = result.get().getEmail();
-            if (personService.findByEmail(email) != null) {
-                throw new IllegalArgumentException("user with this email is already exists");
-            }
-            person.setPassword(encoder.encode(person.getPassword()));
-            Role role;
-            if (person.getRole().getId() == 2) {
-                role = roleService.findByName("admin").orElse(new Role());
-            } else {
-                role = roleService.findByName("user").orElse(new Role());
-            }
-            person.setRole(role);
-            personService.save(person);
-            return new ResponseEntity<>(
-                    result.get(),
-                    HttpStatus.CREATED
-            );
-        } else {
-            return new ResponseEntity<>(
-                    new Person(),
-                    HttpStatus.NOT_FOUND
-            );
-        }
-    }
-
-    /**
-     * get List of users
-     * @return
-     */
-
-    @GetMapping("users/")
+    @GetMapping("/")
+    @ApiOperation("get List of users")
     public List<Person> findAll() {
         return personService.findAll();
     }
 
-    /**
-     * get user by id
-     */
-    @GetMapping("users/{id}")
+
+    @GetMapping("/{id}")
+    @ApiOperation("get user by id")
     public ResponseEntity<Person> findById(@PathVariable int id) {
         Optional<Person> person = personService.findById(id);
         return new ResponseEntity<>(
@@ -90,10 +43,8 @@ public class PersonController {
     }
 
 
-    /**
-     * update user data
-     */
-    @PutMapping("users/{id}")
+    @PutMapping("/{id}")
+    @ApiOperation("update user data")
     @Validated(Operation.OnUpdate.class)
     public ResponseEntity<Void> update(@PathVariable int id, @Valid @RequestBody Person person) {
         Optional<Person> result = Optional.ofNullable(person);
@@ -106,20 +57,16 @@ public class PersonController {
         }
     }
 
-    /**
-     * delete user
-     */
-    @DeleteMapping("users/{id}")
+    @DeleteMapping("/{id}")
+    @ApiOperation("delete user")
     @Validated(Operation.OnDelete.class)
     public ResponseEntity<Void> delete(@PathVariable int id) {
         personService.deleteById(id);
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * partially update user data
-     */
-    @PatchMapping("users/patch/{id}")
+    @PatchMapping("patch/{id}")
+    @ApiOperation("partially update user data")
     public Person patch(@PathVariable int id,@RequestBody Person person) throws InvocationTargetException, IllegalAccessException {
         return personService.patch(id, person);
     }

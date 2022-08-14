@@ -14,6 +14,6 @@ public interface CategoryRepository extends CrudRepository<Category, Integer> {
     void updateStatusToFalse(@Param("id") int id);
 
     @Modifying
-    @Query(value = "UPDATE products AS p SET category = null WHERE p.category_id = :id ", nativeQuery = true)
+    @Query(value = "UPDATE products AS p SET category_id = null WHERE p.category_id = :id ", nativeQuery = true)
     void setCategoryNull(@Param("id") int id);
 }

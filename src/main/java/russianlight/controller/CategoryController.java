@@ -1,6 +1,8 @@
 package russianlight.controller;
 
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -25,19 +27,14 @@ public class CategoryController {
     }
 
 
-    /**
-     * show all categories
-     */
     @GetMapping("/")
+    @ApiOperation("show all categories")
     public List<Category> findAllCategories() {
         return categoryService.findAll();
     }
 
-    /**
-     * show category by id
-     */
-
     @GetMapping("/{id}")
+    @ApiOperation("show category by id")
     public ResponseEntity<Category> findCategoryById(@PathVariable int id) {
         Optional<Category> message = categoryService.findById(id);
         return new ResponseEntity<>(
@@ -46,21 +43,12 @@ public class CategoryController {
         );
     }
 
-    //TODO
-    /**
-     * create a new category
-     */
     @PostMapping("/")
     @Validated(Operation.OnCreate.class)
+    @ApiOperation("create a new category")
     public ResponseEntity save(@Valid @RequestBody Category category) {
         Optional<Category> result = Optional.ofNullable(category);
         if (result.isPresent()) {
-//            if (category.getId() != 0) {
-//                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "redundant param: id MUST be 0");
-//            }
-//        if (category.getName() == null || category.getName().trim().length() == 0) {
-//            throw new NullPointerException("missed param: name");
-//        }
             categoryService.saveCategory(category);
         }
         return new ResponseEntity<>(
@@ -69,10 +57,8 @@ public class CategoryController {
         );
     }
 
-    /**
-     * completely update category
-     */
     @PutMapping("/{id}")
+    @ApiOperation("completely update category")
     @Validated(Operation.OnUpdate.class)
     public ResponseEntity<Void> update(@PathVariable int id, @Valid @RequestBody Category category) {
         Optional<Category> result = Optional.ofNullable(category);
@@ -85,21 +71,16 @@ public class CategoryController {
         }
     }
 
-    /**
-     * delete category
-     */
     @DeleteMapping("/{id}")
+    @ApiOperation("delete category")
     @Validated(Operation.OnDelete.class)
     public ResponseEntity<Void> delete(@PathVariable int id) {
         this.categoryService.deleteCategory(id);
         return ResponseEntity.ok().build();
     }
 
-
-    /**
-     * partially update category
-     */
     @PatchMapping("/patch/{id}")
+    @ApiOperation("partially update category")
     public Category patch(@PathVariable int id,@RequestBody Category category) throws InvocationTargetException, IllegalAccessException {
         return categoryService.patch(id, category);
     }
